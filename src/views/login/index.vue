@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import request from '@/utils/request'
+import { login } from '@/api/user'
 export default {
   name: 'LoginIndex',
   components: {},
@@ -32,8 +32,8 @@ export default {
   data () {
     return {
       user: {
-        mobile: '',
-        code: '',
+        mobile: '13911111111',
+        code: '246810',
         agree: false
       },
       loginLoading: false,
@@ -83,17 +83,18 @@ export default {
       this.loginLoading = true
 
       // 发送请求
-      request({
-        method: 'POST',
-        url: 'mp/v1_0/authorizations',
-        data: this.user
-      }).then(res => {
-        console.log(res)
+      login(this.user).then(res => {
+        // console.log(res)
         this.$message({
           message: '登录成功',
           type: 'success'
         })
         this.loginLoading = false
+        // 跳转到首页
+        // this.$router.push('/')
+        this.$router.push({
+          name: 'home'
+        })
       }).catch(err => {
         console.log('登录失败', err)
         this.$message.error('用户名或密码错误')
