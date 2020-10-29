@@ -1,19 +1,24 @@
 <template>
   <el-container class="layout-container">
-    <el-aside class="aside" width="200px">
+    <el-aside class="aside" width="auto">
       <!-- <AppAside /> -->
-      <app-aside class="aside-menu" />
+      <app-aside class="aside-menu" :is-collapse="isCollapse"/>
     </el-aside>
   <el-container>
     <el-header class="header">
       <div >
-        <i class="el-icon-s-fold"></i>
+        <i
+          :class="{
+            'el-icon-s-fold': !isCollapse,
+            'el-icon-s-unfold': isCollapse
+          }"
+        @click="isCollapse = !isCollapse"></i>
         <span>江苏传智播客技术有限公司</span>
       </div>
       <el-dropdown>
         <div class="avatar-wrap">
-          <img src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2183936484,1791894406&fm=26&gp=0.jpg" alt="">
-          <span>用户昵称</span>
+          <img :src="user.photo" alt="">
+          <span>{{ user.name }}</span>
           <i class="el-icon-arrow-down el-icon--right"></i>
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -37,7 +42,10 @@ export default {
   },
   props: '',
   data () {
-    return {}
+    return {
+      user: {},
+      isCollapse: true
+    }
   },
   computed: {},
   watch: {},
@@ -49,6 +57,7 @@ export default {
     loadUserProfile () {
       getUserProfile().then(res => {
         console.log(res)
+        this.user = res.data.data
       })
     }
   }

@@ -95,6 +95,8 @@ export default {
         this.$router.push({
           name: 'home'
         })
+        // 将接口返回的数据放到本地储存
+        window.localStorage.setItem('this.user', JSON.stringify(res.data.data))
       }).catch(err => {
         console.log('登录失败', err)
         this.$message.error('用户名或密码错误')

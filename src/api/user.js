@@ -9,12 +9,14 @@ export const login = data => {
 }
 
 // 获取用户信息
-export const getUserProfile = data => {
+export const getUserProfile = () => {
+  // const user = JSON.parse(window.localStorage.getItem('user'))
+  // console.log(user.token)
   return request({
     method: 'GET',
-    url: '/mp/v1_0/user/profile',
-    headers: {
-      authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MzU0MTA0MTIsInVzZXJfaWQiOjEsInJlZnJlc2giOmZhbHNlLCJ2ZXJpZmllZCI6dHJ1ZX0.GQMqRiJcY50_DjEUPH_BFikkym1H1-o8e4gePcCUwdU'
-    }
+    url: '/mp/v1_0/user/profile'
+    // headers: {
+    //   Authorization: `Bearer ${user.token}`
+    // }
   })
 }

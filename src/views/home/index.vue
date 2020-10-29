@@ -16,7 +16,7 @@ export default {
   watch: {},
   created () {},
   mounted () {},
-  methods () {}
+  methods: {}
 }
 </script>
 

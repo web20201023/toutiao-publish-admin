@@ -4,7 +4,8 @@
     background-color="#002033"
     text-color="#fff"
     active-text-color="#ffd04b"
-    router>
+    router
+    :collapse="isCollapse">
     <div class="images">
     </div>
     <el-menu-item index="/">
@@ -42,7 +43,7 @@
 export default {
   name: 'AppAside',
   components: '',
-  props: '',
+  props: ['is-collapse'],
   data () {
     return {}
   },
