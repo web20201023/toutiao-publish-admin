@@ -23,11 +23,13 @@
         </div>
         <el-dropdown-menu slot="dropdown">
           <el-dropdown-item>设置</el-dropdown-item>
-          <el-dropdown-item>退出</el-dropdown-item>
+          <el-dropdown-item @click.native="onLogout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-header>
-    <el-main class="main">首页</el-main>
+    <el-main class="main">
+      <router-view />
+    </el-main>
   </el-container>
 </el-container>
 </template>
@@ -44,7 +46,7 @@ export default {
   data () {
     return {
       user: {},
-      isCollapse: true
+      isCollapse: false
     }
   },
   computed: {},
@@ -56,9 +58,20 @@ export default {
   methods: {
     loadUserProfile () {
       getUserProfile().then(res => {
-        console.log(res)
+        // console.log(res)
         this.user = res.data.data
       })
+    },
+    onLogout () {
+      this.$confirm('是否退出登录?', '退出登录提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        localStorage.removeItem('this.user')
+        this.$router.push('/login')
+      }).catch(() => {})
+      // console.log('onLogout')
     }
   }
 }
@@ -96,7 +109,5 @@ export default {
     }
   }
 }
-.main {
-  background-color: aqua;
-}
+.main {}
 </style>

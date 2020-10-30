@@ -14,7 +14,7 @@ request.interceptors.request.use(
   // 任何请求都经过这里
   // config 可以修改
   function (config) {
-    const user = JSON.parse(window.localStorage.getItem('user'))
+    const user = JSON.parse(window.localStorage.getItem('this.user'))
     if (user) {
       config.headers.Authorization = `Bearer ${user.token}`
     }

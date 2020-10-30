@@ -90,13 +90,15 @@ export default {
           type: 'success'
         })
         this.loginLoading = false
-        // 跳转到首页
+
+        // 将接口返回的数据放到本地储存
+        window.localStorage.setItem('this.user', JSON.stringify(res.data.data))
+
+        // 跳转到首页,跳转要在储存token 之后，要不路由守卫以后，无法登录跳转
         // this.$router.push('/')
         this.$router.push({
           name: 'home'
         })
-        // 将接口返回的数据放到本地储存
-        window.localStorage.setItem('this.user', JSON.stringify(res.data.data))
       }).catch(err => {
         console.log('登录失败', err)
         this.$message.error('用户名或密码错误')
