@@ -62,11 +62,12 @@
       </div>
         <!-- 列表开始 -->
         <el-table
-          size="small"
-          stripe
+          v-loading="loading"
           :data="articles"
+          size="small"
+          class="article-table"
           style="width: 100%"
-          class="article-table">
+          stripe>
           <el-table-column
             label="封面">
             <template slot-scope="scope">
@@ -107,17 +108,20 @@
             prop="state"
             label="状态">
             <!-- 自定义表格列开始 -->
-             <template>
+             <template slot-scope="scope">
               <el-button
                 size="mini"
                 type="primary"
                 icon="el-icon-edit"
+                @click="$router.push('./publish?id=' + scope.row.id.toString())"
                 circle>
               </el-button>
               <el-button
                 size="mini"
                 type="danger"
                 icon="el-icon-delete"
+                :page-size.sync="page"
+                @click="onDeleteArticle(scope.row.id)"
                 circle>
               </el-button>
             </template>
@@ -130,8 +134,10 @@
       background
       layout="prev, pager, next"
       :total="totalCount"
+      :page-size="pageSize"
+      :disabled="loading"
       @current-change="currentChange"
-      :page-size="pageSize">
+    >
     </el-pagination>
     <!-- 分页结束 -->
     </el-card>
@@ -140,7 +146,7 @@
 </template>
 
 <script>
-import { getArticle, getArticleChannels } from '@/api/article'
+import { getArticles, getArticleChannels, deleteArticle } from '@/api/article'
 export default {
   name: 'ArticleIndex',
   components: '',
@@ -165,7 +171,9 @@ export default {
       status: null,
       channels: {},
       channelId: null,
-      rangDate: null
+      rangDate: null,
+      loading: true,
+      page: 1
     }
   },
   computed: {},
@@ -178,7 +186,8 @@ export default {
   mounted () {},
   methods: {
     loadArticle (page = 1) {
-      getArticle({
+      this.loading = true
+      getArticles({
         page,
         pre_page: this.pageSize,
         status: this.status,
@@ -189,6 +198,7 @@ export default {
         // console.log(res)
         this.articles = res.data.data.results
         this.totalCount = res.data.data.total_count
+        this.loading = false
       })
     },
     // 修改前页
@@ -200,6 +210,20 @@ export default {
         this.channels = res.data.data.channels
         // console.log(this.channels)
       })
+    },
+    onDeleteArticle (articleId) {
+      console.log(articleId.toString())
+      this.$confirm('是否刪除?', '刪除提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteArticle(articleId.toString()).then(res => {
+          // console.log(res)
+          this.loadArticle(this.page)
+        })
+      }).catch(() => {})
+      // console.log('onLogout')
     }
   }
 }

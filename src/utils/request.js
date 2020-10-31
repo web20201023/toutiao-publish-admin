@@ -3,10 +3,17 @@
  */
 
 import axios from 'axios'
-
+import JSONbig from 'json-bigint'
 // 创建一个 axios 实例
 const request = axios.create({
-  baseURL: 'http://ttapi.research.itcast.cn/'
+  baseURL: 'http://ttapi.research.itcast.cn/',
+  transformResponse: [function (data) {
+    try {
+      return JSONbig.parse(data)
+    } catch (error) {
+      return data
+    }
+  }]
 })
 
 // 请求拦截器
