@@ -12,12 +12,19 @@
       </div>
       <div class="text item">
         <!-- 表单开始 -->
-        <el-form :model="article" ref="ruleForm" label-width="100px">
+        <el-form :model="article" :rules="formRules" ref="publish-form" label-width="100px" size="medium">
           <el-form-item label="标题" prop="title">
             <el-input v-model="article.title"></el-input>
           </el-form-item>
           <el-form-item label="内容" prop="content">
-            <el-input type="textarea" v-model="article.content"></el-input>
+            <!-- <el-input type="textarea" v-model="article.content"></el-input> -->
+            <el-tiptap
+             v-model="article.content"
+            :extensions="extensions"
+            height="450"
+            lang="zh"
+            placeholder="请输入文章内容"
+            ></el-tiptap>
           </el-form-item>
           <el-form-item label="封面">
             <el-radio-group v-model="article.cover.type">
@@ -49,10 +56,42 @@
 </template>
 
 <script>
-import { getArticleChannels, addArticle, getArticle, changeArticle } from '@/api/article'
+import { uploadIamge } from '@/api/image'
+import {
+  getArticleChannels,
+  addArticle,
+  getArticle,
+  changeArticle
+} from '@/api/article'
+import {
+  ElementTiptap,
+  // 需要的 extensions
+  Doc,
+  Text,
+  Paragraph,
+  Heading,
+  Image,
+  Bold,
+  Underline,
+  Italic,
+  Strike,
+  ListItem,
+  BulletList,
+  OrderedList,
+  Fullscreen,
+  Preview,
+  SelectAll,
+  FontType,
+  FontSize,
+  CodeBlock,
+  TextColor
+} from 'element-tiptap'
+import 'element-tiptap/lib/index.css'
 export default {
   name: 'PublishIndex',
-  components: {},
+  components: {
+    'el-tiptap': ElementTiptap
+  },
   props: {},
   data () {
     return {
@@ -65,6 +104,54 @@ export default {
           images: []
         },
         channel_id: null
+      },
+      extensions: [
+        new Doc(),
+        new Text(),
+        new Paragraph(),
+        new Heading({ level: 5 }),
+        new Bold({ bubble: true }), // 在气泡菜单中渲染菜单按钮
+        new Underline({ bubble: true, menubar: false }), // 在气泡菜单而不在菜单栏中渲染菜单按钮
+        new Italic(),
+        new CodeBlock(),
+        new TextColor(),
+        new Image({
+          uploadRequest (file) {
+            const fn = new FormData()
+            fn.append('image', file)
+            return uploadIamge(fn).then(res => {
+              return res.data.data.url
+            })
+          }
+        }),
+        new Strike(),
+        new ListItem(),
+        new BulletList(),
+        new OrderedList(),
+        new Fullscreen(),
+        new Preview(),
+        new SelectAll(),
+        new FontType(),
+        new FontSize()
+      ],
+      formRules: {
+        title: [
+          { required: true, message: '请输入标题', trigger: 'blur' },
+          { min: 5, max: 30, message: '长度在 5 到 30 个字符', trigger: 'blur' }
+        ],
+        content: [
+          { required: true, message: '请输入文章内容', trigger: 'blur' },
+          {
+            validator (rule, value, callback) {
+              if (value === '<p></p>') {
+                callback(new Error('请输入文章内容'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur'
+          }
+        ]
       }
     }
   },
@@ -85,24 +172,29 @@ export default {
       })
     },
     onPublish (draft = false) {
-      const articleId = this.$route.query.id
-      if (articleId) {
-        changeArticle(articleId, this.article, draft).then(res => {
-          this.$message({
-            message: `${draft ? '发布成功' : '保存成功'}`,
-            type: 'success'
+      this.$refs['publish-form'].validate(valide => {
+        if (!valide) {
+          return
+        }
+        const articleId = this.$route.query.id
+        if (articleId) {
+          changeArticle(articleId, this.article, draft).then(res => {
+            this.$message({
+              message: `${draft ? '发布成功' : '保存成功'}`,
+              type: 'success'
+            })
+            this.$router.push('./article')
           })
-          this.$router.push('./article')
-        })
-      } else {
-        addArticle(this.article, draft).then(res => {
-          // console.log(res)
-          this.$message({
-            message: `${draft ? '发布成功' : '保存成功'}`,
-            type: 'success'
+        } else {
+          addArticle(this.article, draft).then(res => {
+            // console.log(res)
+            this.$message({
+              message: `${draft ? '发布成功' : '保存成功'}`,
+              type: 'success'
+            })
           })
-        })
-      }
+        }
+      })
     },
     loadArticle () {
       getArticle(this.$route.query.id).then(res => {
