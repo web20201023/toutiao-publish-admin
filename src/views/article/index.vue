@@ -212,7 +212,7 @@ export default {
       })
     },
     onDeleteArticle (articleId) {
-      console.log(articleId.toString())
+      // console.log(articleId.toString())
       this.$confirm('是否刪除?', '刪除提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
