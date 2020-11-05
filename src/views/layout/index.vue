@@ -22,7 +22,9 @@
           <i class="el-icon-arrow-down el-icon--right"></i>
         </div>
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>设置</el-dropdown-item>
+          <el-dropdown-item>
+             <router-link to='/setting' style="text-decoration: none">设置</router-link>
+            </el-dropdown-item>
           <el-dropdown-item @click.native="onLogout">退出</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>

@@ -11,7 +11,7 @@
         <!-- 面包屑结束 -->
       </div>
       <!-- 表单 -->
-      <el-form :model="user" :rules="userRules" ref="publish-form" label-width="100px" size="medium">
+      <el-form :model="user" :rules="userRules" ref="publish-form" label-width="100px">
         <el-row>
           <el-col :span="12">
             <el-form-item label="编号" prop="id">
@@ -116,10 +116,10 @@ export default {
   },
   computed: {},
   watch: {},
-  created () {},
-  mounted () {
+  created () {
     this.loadUser()
   },
+  mounted () {},
   methods: {
     loadUser () {
       getUserProfile().then(res => {

@@ -5,8 +5,8 @@
       <div slot="header" class="clearfix">
         <!-- 面包屑开始 -->
         <el-breadcrumb separator="/">
-          <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-          <el-breadcrumb-item><a href="/publish">{{$route.query.id ? '内容修改' : '内容发布'}}</a></el-breadcrumb-item>
+          <el-breadcrumb-item to="/">首页</el-breadcrumb-item>
+          <el-breadcrumb-item>{{$route.query.id ? '内容修改' : '内容发布'}}</el-breadcrumb-item>
         </el-breadcrumb>
         <!-- 面包屑结束 -->
       </div>
@@ -28,11 +28,18 @@
           </el-form-item>
           <el-form-item label="封面">
             <el-radio-group v-model="article.cover.type">
-              <el-radio label="1">单图</el-radio>
-              <el-radio label="3">三图</el-radio>
-              <el-radio label="0">无图</el-radio>
-              <el-radio label="-1">自动</el-radio>
+              <el-radio :label="1">单图</el-radio>
+              <el-radio :label="3">三图</el-radio>
+              <el-radio :label="0">无图</el-radio>
+              <el-radio :label="-1">自动</el-radio>
             </el-radio-group>
+            <template v-if="article.cover.type > 0">
+              <update-cover
+                v-for="(cover, index) in article.cover.type"
+                :key="cover"
+                v-model="article.cover.images[index]"
+              />
+            </template>
           </el-form-item>
           <el-form-item label="频道" prop="channel_id">
             <el-select v-model="article.channel_id" placeholder="请选择频道">
@@ -40,7 +47,8 @@
               v-for="(channel, i) in channels"
               :key="i"
               :value="channel.id"
-              :label="channel.name"></el-option>
+              :label="channel.name"
+            ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
@@ -56,6 +64,7 @@
 </template>
 
 <script>
+import UpdateCover from './components/update-cover'
 import { uploadIamge } from '@/api/image'
 import {
   getArticleChannels,
@@ -90,7 +99,8 @@ import 'element-tiptap/lib/index.css'
 export default {
   name: 'PublishIndex',
   components: {
-    'el-tiptap': ElementTiptap
+    'el-tiptap': ElementTiptap,
+    UpdateCover
   },
   props: {},
   data () {
@@ -100,7 +110,7 @@ export default {
         title: '',
         content: '',
         cover: {
-          type: 0,
+          type: 1,
           images: []
         },
         channel_id: null
@@ -151,6 +161,9 @@ export default {
             },
             trigger: 'blur'
           }
+        ],
+        channel_id: [
+          { required: true, message: '请选择文章频道' }
         ]
       }
     }
@@ -192,6 +205,7 @@ export default {
               message: `${draft ? '发布成功' : '保存成功'}`,
               type: 'success'
             })
+            this.$router.push('/article')
           })
         }
       })
@@ -203,6 +217,9 @@ export default {
         // console.log(this.article)
       })
     }
+    // onUpdateCover (index, url) {
+    //   this.article.cover.images[index] = url
+    // }
   }
 }
 </script>

@@ -4,6 +4,10 @@
 
 import axios from 'axios'
 import JSONbig from 'json-bigint'
+
+import router from '@/router'
+
+import { Message } from 'element-ui'
 // 创建一个 axios 实例
 const request = axios.create({
   baseURL: 'http://ttapi.research.itcast.cn/',
@@ -33,5 +37,24 @@ request.interceptors.request.use(
   }
 )
 
+// 相应拦截器
+// Add a response interceptor
+request.interceptors.response.use(function (response) {
+  return response
+}, function (error) {
+  const { status } = error.response
+  if (status === 401) {
+    window.localStorage.removeItem('user')
+    Message.error('登录状态无效，请重新登录')
+    router.push('./login')
+  } else if (status === 403) {
+    Message.error('没有操作权限')
+  } else if (status === 400) {
+    Message.error('请求参数错误')
+  } else if (status >= 500) {
+    Message.error('服务器内部错误，请稍候重试')
+  }
+  return Promise.reject(error)
+})
 // 导出请求方法
 export default request

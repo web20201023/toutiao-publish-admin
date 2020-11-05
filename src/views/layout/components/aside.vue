@@ -1,14 +1,14 @@
 <template>
   <el-menu
-    class="nav-menu"
-    default-active="/"
+    class="nav-menu el-menu-vertical-demo"
+    :default-active="$route.path"
     background-color="#002033"
     text-color="#fff"
     active-text-color="#ffd04b"
     router
     :collapse="isCollapse">
     <el-menu-item index="/">
-      <i class="el-icon-setting"></i>
+      <i class="el-icon-s-home"></i>
       <span slot="title">首页</span>
     </el-menu-item>
     <el-menu-item index="/article">
@@ -20,15 +20,15 @@
       <span slot="title">素材管理</span>
     </el-menu-item>
     <el-menu-item index="/publish">
-      <i class="el-icon-setting"></i>
+      <i class="el-icon-s-promotion"></i>
       <span slot="title">发布文章</span>
     </el-menu-item>
     <el-menu-item index="/comment">
-      <i class="el-icon-setting"></i>
+      <i class="el-icon-chat-line-square"></i>
       <span slot="title">评论管理</span>
     </el-menu-item>
     <el-menu-item index="/fans">
-      <i class="el-icon-setting"></i>
+      <i class="el-icon-s-custom"></i>
       <span slot="title">粉丝管理</span>
     </el-menu-item>
     <el-menu-item index="/setting">
@@ -55,7 +55,14 @@ export default {
 </script>
 
 <style scoped lang="less">
-// .images{
-//   background: url('./login/login_index.png') no-repeat;
-// }
+.nav-menu {
+  .iconfont {
+    margin-right: 10px;
+    padding-left: 5px;
+  }
+}
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+  min-height: 400px;
+}
 </style>

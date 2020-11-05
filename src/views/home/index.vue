@@ -1,6 +1,5 @@
 <template>
   <div class="home-container">
-    首页
   </div>
 </template>
 
@@ -21,5 +20,11 @@ export default {
 </script>
 
 <style scoped lang="less">
-
+  .home-container{
+    background: url('./home.jpg') no-repeat center center;
+    background-size:cover;
+    background-attachment:fixed;
+    background-color:#CCCCCC;
+    height: 100%;
+  }
 </style>
